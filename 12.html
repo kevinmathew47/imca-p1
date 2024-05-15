@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realtime Monitor</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+</head>
+<body>
+
+    <h1>Real-time Monitor DHT & UltraSonic Sensor</h1>
+
+    <!-- Humidity Progress Bar -->
+    <div class="progress-bar-container" id="humidity">
+        <h2>
+            <label for="humidity">Humidity</label>
+        </h2>
+        <div class="progress-bar humidity">
+            <progress id="humidity-progress" min="0" max="100" value="0"></progress>
+            <span class="value-humidity">0%</span>
+        </div>
+    </div>
+
+    <!-- Temperature Progress Bar -->
+    <div class="progress-bar-container" id="temperature">
+        <h2>
+            <label for="temperature">Temperature</label>
+        </h2>
+        <div class="progress-bar temperature">
+            <progress id="temperature-progress" min="0" max="100" value="0"></progress>
+            <span class="value-temperature">0°C</span>
+        </div>
+    </div>
+
+    <!-- Moisture Progress Bar -->
+    <div class="progress-bar-container" id="moisture">
+        <h2>
+            <label for="moisture">Moisture</label>
+        </h2>
+        <div class="progress-bar moisture">
+            <progress id="moisture-progress" min="0" max="100" value="0"></progress>
+            <span class="value-moisture">0%</span>
+        </div>
+    </div>
+
+    <!-- Firebase Configuration and Initialization Script -->
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyAPLfVqrSL3KOingphunCOkO7Necw1J-6Q",
+            authDomain: "eco-flow-ebdb1.firebaseapp.com",
+            databaseURL: "https://eco-flow-ebdb1-default-rtdb.firebaseio.com",
+            projectId: "eco-flow-ebdb1",
+            storageBucket: "eco-flow-ebdb1.appspot.com",
+            messagingSenderId: "542838819854",
+            appId: "1:542838819854:web:a0cb6914136d9ad256c05f"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Reference to the Firebase database for humidity, temperature, and moisture
+        var humidityRef = firebase.database().ref("humidity");
+        var temperatureRef = firebase.database().ref("temperature");
+        var moistureRef = firebase.database().ref("moisture/moisture1");
+
+        // Update humidity progress
+        function updateHumidityProgress() {
+            humidityRef.on('value', function (snapshot) {
+                var humidityValue = snapshot.val();
+                document.getElementById("humidity-progress").value = humidityValue;
+                document.querySelector(".value-humidity").textContent = humidityValue + "%";
+            });
+        }
+
+        // Update temperature progress
+        function updateTemperatureProgress() {
+            temperatureRef.on('value', function (snapshot) {
+                var temperatureValue = snapshot.val();
+                document.getElementById("temperature-progress").value = temperatureValue;
+                document.querySelector(".value-temperature").textContent = temperatureValue + "°C";
+            });
+        }
+
+        // Update moisture progress
+        function updateMoistureProgress() {
+            moistureRef.on('value', function (snapshot) {
+                var moistureValue = snapshot.val();
+                document.getElementById("moisture-progress").value = moistureValue;
+                document.querySelector(".value-moisture").textContent = moistureValue + "%";
+            });
+        }
+
+        // Call the update functions
+        updateHumidityProgress();
+        updateTemperatureProgress();
+        updateMoistureProgress();
+    </script>
+</body>
+</html>
